@@ -10,10 +10,10 @@ class Usuario
   private $dessenha;
   private $dtcadastro;
 
-  function __construct()
+/*  function __construct()
   {
     # code...
-  }
+  }*/
 
   public function getIdusuario()
   {
@@ -63,12 +63,12 @@ class Usuario
     ));
 
     if (count($resultado) > 0) {
-      $row = $resultado[0];
-
-      $this->setIdusuario($row['idusuario']);
+      //$row = $resultado[0];
+      $this->setData($resultado[0]);
+    /*  $this->setIdusuario($row['idusuario']);
       $this->setDeslogin($row['deslogin']);
       $this->setDessenha($row['dessenha']);
-      $this->setDtcadastro(new DateTime($row['dtcadastro']));
+      $this->setDtcadastro(new DateTime($row['dtcadastro']));*/
     }
   }
 
@@ -95,15 +95,43 @@ class Usuario
     ));
 
     if (count($resultado) > 0) {
-      $row = $resultado[0];
+      //$row = $resultado[0];
+      $this->setData($resultado[0]);
 
-      $this->setIdusuario($row['idusuario']);
-      $this->setDeslogin($row['deslogin']);
-      $this->setDessenha($row['dessenha']);
-      $this->setDtcadastro(new DateTime($row['dtcadastro']));
+    /*  $this->setIdusuario($data['idusuario']);
+      $this->setDeslogin($data['deslogin']);
+      $this->setDessenha($data['dessenha']);
+      $this->setDtcadastro(new DateTime($data['dtcadastro']));*/
+
     }else {
       throw new Exception("Login e/ou senha inválidos.");
     }
+  }
+
+  public function insert()
+  {
+    $sql = new Sql();
+    $resultado = $sql->select("CALL sp_usuario_insert(:LOGIN, :PASSWORD)",array(
+      ':LOGIN'=>$this->getDeslogin(),
+      ':PASSWORD'=>$this->getDessenha()
+    ));
+
+    if (count($resultado) > 0) {
+      $this->setData($resultado[0]);
+    }
+  }
+  public function __construct($login = "", $password = "")
+  {
+    $this->setDeslogin($login);
+    $this->setDessenha($password);
+  }
+
+  public function setData($data)
+  {
+    $this->setIdusuario($data['idusuario']);
+    $this->setDeslogin($data['deslogin']);
+    $this->setDessenha($data['dessenha']);
+    $this->setDtcadastro(new DateTime($data['dtcadastro']));
   }
 
   public function __toString()
